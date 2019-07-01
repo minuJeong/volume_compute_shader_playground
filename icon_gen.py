@@ -1,3 +1,4 @@
+import math
 from itertools import product
 
 import numpy as np
@@ -9,30 +10,32 @@ from PyQt5 import QtGui
 
 W, H = 64, 64
 
+
+def clamp(x, y):
+    x = min(max(x, 0), W - 1)
+    y = min(max(y, 0), H - 1)
+    return x, y
+
+
 space = np.zeros((H, W, 4), dtype=np.float32)
-space[:, :, -1] = 255
+space[:, :, 0] = 1.0
+space[:, :, -1] = 1.0
 
 HW, HH = int(W / 2), int(H / 2)
-OFFSET = int(max(W, H) * 0.42)
 
-px, py = HW, HH
-for ox, oy in product(range(-OFFSET, OFFSET + 1), range(-OFFSET, OFFSET + 1)):
-    x, y = px + ox, py + oy
+cx, cy = 0, 0
 
-    c1 = x > y
-    r = 128 if c1 else 255
-    g = 255 if c1 else 128
-    b = 128 if c1 else 96
+for i in range(100):
+    c = math.cos(cx + i) * 32 + 32
+    s = math.sin(cy + i) * 32 + 32
 
-    space[x, y] = (r, g, b, 255)
+    cx, cy = int(c), int(s)
 
+    for ox, oy in product(range(-3, +4), range(-3, +4)):
+        cx, cy = clamp(cx + ox, cy + oy)
+        space[cx, cy] = (1.0, 1.0, 0.5, 1.0)
 
-RXF, RXT = HW - OFFSET, HW + OFFSET
-RYF, RYT = HH - OFFSET, HH + OFFSET
-roll_target = space[RXF: RXT, RYF: RYT, :3]
-roll_target = np.roll(roll_target, int(HW * HH * 0.5))
-space[RXF: RXT, RYF: RYT, :3] = roll_target
-
+space = np.multiply(space, 255.0)
 space = space.astype(np.uint8)
 
 ii.imwrite("icon.png", space)

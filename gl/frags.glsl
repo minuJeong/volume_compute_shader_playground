@@ -19,12 +19,12 @@ out vec4 out_color;
 void main()
 {
     vec2 wh = vec2(u_width, u_height);
+    uvec3 VV = u_volumesize;
     vec2 uv = v_uv;
 
-    uvec3 xyz = uvec3(uv * wh, 0.0);
+    uvec3 xyz = uvec3(uv * vec2(VV.xy), 0.0);
     xyz.z = uint(cos(u_time * 2.0) * 0.5 + 0.5);
 
-    uvec3 VV = u_volumesize;
 
     float debug_idx = xyz.x + xyz.y + VV.x + xyz.z * (VV.x * VV.y);
 
@@ -32,6 +32,7 @@ void main()
     vec4 volume_data = volume[i];
 
     vec3 RGB = volume_data.xyz;
+    RGB = xyz / vec3(VV);
 
     // RGB.xy = xyz.xy / wh;
 
