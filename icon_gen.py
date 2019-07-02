@@ -1,3 +1,4 @@
+import os
 import math
 from itertools import product
 
@@ -38,9 +39,11 @@ for i in range(100):
 space = np.multiply(space, 255.0)
 space = space.astype(np.uint8)
 
-ii.imwrite("icon.png", space)
+if not os.path.isdir("./res"):
+    os.makedirs("./res")
+ii.imwrite("./res/icon.png", space)
 
 app = QtWidgets.QApplication([])
-icon = QtGui.QIcon("icon.png")
+icon = QtGui.QIcon("./res/icon.png")
 
 print(icon)

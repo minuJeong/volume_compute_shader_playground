@@ -49,7 +49,7 @@ class Render(QtWidgets.QOpenGLWidget):
         self.setMaximumSize(self.u_width, self.u_height)
         self.setWindowFlag(Qt.WindowStaysOnTopHint)
         self.setWindowTitle("Texture Generator")
-        self.setWindowIcon(QtGui.QIcon("icon.png"))
+        self.setWindowIcon(QtGui.QIcon("./res/icon.png"))
 
     def read(self, path):
         with open(path, "r") as fp:
@@ -80,7 +80,7 @@ class Render(QtWidgets.QOpenGLWidget):
             self.set_uniform(self.render_program, uniform)
 
             # build volume compute
-            self.cs = self.gl.compute_shader(self.read("./gl/compute.glsl"))
+            self.cs = self.gl.compute_shader(self.read("./gl/compute_volume.glsl"))
 
             self.set_uniform(self.cs, uniform)
 
